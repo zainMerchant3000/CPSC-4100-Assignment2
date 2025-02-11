@@ -114,10 +114,19 @@ public class FindSubsetCount {
             // matrix[1][4] = 1 (each point marked as 1)
             matrix[x + 1][y + 1] = 1;
         }
+        for (int i = 1; i <= maxX; i++) {
+            for (int j = 1; j <= maxY; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
         //System.out.println(Arrays.toString(matrix[0]));
 
         ///  create the PrefixSum2D object
         PrefixSum2D prefixSum = new PrefixSum2D(matrix);
+
+        System.out.println("PrefixSum: " + prefixSum);
         /// apply recursive algorithm that calculates the preSum for rectangle
          /// sumRegion -> determines #of points within the rectangle
 
@@ -147,8 +156,9 @@ class PrefixSum2D {
     // preSum[i][j] records the sum of elements in the matrix [0, 0, i - 1, j - 1]
     private int[][] preSum;
 
+    // constructor that takes 2D matrix as input
     public PrefixSum2D(int[][] matrix) {
-        // 1) define dimensions for matrix array
+        // 1) define dimensions for preSum array
         int m = matrix.length, n = matrix[0].length;
         // check matrix is valid (not necessary)
         if (m == 0 || n == 0) return;
@@ -161,6 +171,19 @@ class PrefixSum2D {
                         + matrix[i - 1][j - 1] - preSum[i - 1][j - 1];
             }
         }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                System.out.print("preSum[" + i + "][" + j + "] = " + preSum[i - 1][j - 1] + " ");
+            }
+            System.out.println();
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                System.out.print(preSum[i][j] + " ");
+            }
+            System.out.println();
+        }
+
     }
 
     // calculate the sum of elements in the submatrix [x1, y1, x2, y2]
