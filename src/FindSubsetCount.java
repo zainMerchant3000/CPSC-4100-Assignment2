@@ -54,9 +54,9 @@ public class FindSubsetCount {
         // Coordinate Compression:
         // xMap: {0:0, 1:1, 2 :2, 3:3, 4:4}
         // yMap: {0: 0, 1:1, 2:2, 3:3, 4:4}
-          // {0,:0} -> (x-point, rank)
+        // {0,:0} -> (x-point, rank)
         // rank = position of x and y coordinate
-          // ex) rank 0 = point 0
+        // ex) rank 0 = point 0
 
         // use HashMap to determine
         Map<Integer, Integer> xMap = new HashMap<>();
@@ -74,8 +74,8 @@ public class FindSubsetCount {
         //
         System.out.println("xMap: " + xMap);
         System.out.println("yMap: " + yMap);
-        List <int[]> compressedPoints = new ArrayList<>();
-        for (int[] point: points) {
+        List<int[]> compressedPoints = new ArrayList<>();
+        for (int[] point : points) {
             // ex) (0,3)
             // xMap[0] = 0 ->
             // yMap[3] = 3
@@ -93,10 +93,80 @@ public class FindSubsetCount {
             System.out.println(Arrays.toString(point));
         }
 
+        ///  create the matrix:
+        // maxX = X axis (# of unique x-points)
+        // maxY = Y axis (# of unique y-points)
+        int maxX = xList.size();
+        int maxY = yList.size();
+        // initialize 2D  matrix with known dimensions
+        int[][] matrix = new int[maxX + 1][maxY + 1];
+
+        //populate Matrix with compressed points:
+        for (int[] point : compressedPoints) {
+            // retrieve x and y coordinates of each point
+            int x = point[0];
+            int y = point[1];
+            // mark each point
+            // ex)
+            // (0,3)
+            // x = 0 -> point[0]
+            // y = 3 -> point[1]
+            // matrix[1][4] = 1 (each point marked as 1)
+            matrix[x + 1][y + 1] = 1;
+        }
+        //System.out.println(Arrays.toString(matrix[0]));
+
+        ///  create the PrefixSum2D object
+        PrefixSum2D prefixSum = new PrefixSum2D(matrix);
+        /// apply recursive algorithm that calculates the preSum for rectangle
+         /// sumRegion -> determines #of points within the rectangle
+
+
+        /// TODO: next steps
+        ///  PreSum Matrix
+        ///  can move left and right in our rectangle
+        ///
+        /// possible assumptions:
+        ///  both left and right have L and R amount of points on either side
+        ///  will have
+        ///  process:
+        ///  1) create matrix Matrix that stores all of the points in 2D array
+        ///  2) will need to pick arbitrary 2 points (vertex in entire graph)
+        ///  3) do rectangle process (determining going left or right)
+        ///  rangeQuery to calculate number of points to determine direction
 
         long count = 0;
         /* your code here to calculate the count*/
 
         System.out.println(count);
     }
+}
+
+/// create PrefixSum2D
+class PrefixSum2D {
+    // preSum[i][j] records the sum of elements in the matrix [0, 0, i - 1, j - 1]
+    private int[][] preSum;
+
+    public PrefixSum2D(int[][] matrix) {
+        // 1) define dimensions for matrix array
+        int m = matrix.length, n = matrix[0].length;
+        // check matrix is valid (not necessary)
+        if (m == 0 || n == 0) return;
+        // initialize preSum array
+        preSum = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                // calculate the sum of elements for each matrix [0,0,i,j]
+                preSum[i][j] = preSum[i - 1][j] + preSum[i][j - 1]
+                        + matrix[i - 1][j - 1] - preSum[i - 1][j - 1];
+            }
+        }
+    }
+
+    // calculate the sum of elements in the submatrix [x1, y1, x2, y2]
+    public int sumRegion(int x1, int y1, int x2, int y2) {
+        return preSum[x2 + 1][y2 + 1] - preSum[x2 + 1][y1] - preSum[x1][y1];
+    }
+
+
 }
