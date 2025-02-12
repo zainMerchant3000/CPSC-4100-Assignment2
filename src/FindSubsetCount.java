@@ -94,12 +94,12 @@ public class FindSubsetCount {
         }
 
         ///  create the matrix:
-        // maxX = X axis (# of unique x-points)
-        // maxY = Y axis (# of unique y-points)
-        int maxX = xList.size();
-        int maxY = yList.size();
+        // numX = X axis (# of unique x-points)
+        // numY = Y axis (# of unique y-points)
+        int numX = xList.size();
+        int numY = yList.size();
         // initialize 2D  matrix with known dimensions
-        int[][] matrix = new int[maxX + 1][maxY + 1];
+        int[][] matrix = new int[numX][numY];
 
         //populate Matrix with compressed points:
         for (int[] point : compressedPoints) {
@@ -111,11 +111,11 @@ public class FindSubsetCount {
             // (0,3)
             // x = 0 -> point[0]
             // y = 3 -> point[1]
-            // matrix[1][4] = 1 (each point marked as 1)
-            matrix[x + 1][y + 1] = 1;
+            // matrix[0][3] = 1 (each point marked as 1)
+            matrix[x][y] = 1;
         }
-        for (int i = 1; i <= maxX; i++) {
-            for (int j = 1; j <= maxY; j++) {
+        for (int i = 0; i < numX; i++) {
+            for (int j = 0; j < numY; j++) {
                 System.out.print(matrix[i][j] + " ");
             }
             System.out.println();
@@ -141,8 +141,25 @@ public class FindSubsetCount {
         ///  process:
         ///  1) create matrix Matrix that stores all of the points in 2D array
         ///  2) will need to pick arbitrary 2 points (vertex in entire graph)
+          ///  ex) (i,j) = 0
         ///  3) do rectangle process (determining going left or right)
         ///  rangeQuery to calculate number of points to determine direction
+
+        /*
+        //
+        for (int left = 0; left < maxX; left++) {
+            for (int right = left + 1; right < maxX; right++) {
+                // storing the sum of points in each row between the columns left
+                and right
+                int[] rowSum = new int[maxY];
+                for (int row = 0; row < maxY; row++) {
+                    rowSum[row] = ps.sumRegion(left, row, right, row);
+                }
+                count += countValidRectangles(rowSum);
+            }
+        }
+
+         */
 
         long count = 0;
         /* your code here to calculate the count*/
@@ -173,7 +190,7 @@ class PrefixSum2D {
         }
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                System.out.print("preSum[" + i + "][" + j + "] = " + preSum[i - 1][j - 1] + " ");
+                System.out.print("preSum[" + i + "][" + j + "] = " + preSum[i][j] + " ");
             }
             System.out.println();
         }
