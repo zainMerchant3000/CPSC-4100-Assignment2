@@ -145,21 +145,25 @@ public class FindSubsetCount {
         ///  3) do rectangle process (determining going left or right)
         ///  rangeQuery to calculate number of points to determine direction
 
-        /*
+        
         //
-        for (int left = 0; left < maxX; left++) {
-            for (int right = left + 1; right < maxX; right++) {
+         // left = x-coordinate
+         // right =
+        for (int left = 0; left < numX; left++) {
+            for (int right = left + 1; right < numX; right++) {
                 // storing the sum of points in each row between the columns left
-                and right
-                int[] rowSum = new int[maxY];
-                for (int row = 0; row < maxY; row++) {
-                    rowSum[row] = ps.sumRegion(left, row, right, row);
+              //  and right
+                // ex)
+                int[] rowSum = new int[numY];
+                for (int row = 0; row < numY; row++) {
+                    rowSum[row] = prefixSum.sumRegion(left, row, right, row);
+                    System.out.print(rowSum[row] + " ");
                 }
-                count += countValidRectangles(rowSum);
+               // count += countValidRectangles(rowSum);
             }
         }
 
-         */
+         
 
         long count = 0;
         /* your code here to calculate the count*/
@@ -205,7 +209,7 @@ class PrefixSum2D {
 
     // calculate the sum of elements in the submatrix [x1, y1, x2, y2]
     public int sumRegion(int x1, int y1, int x2, int y2) {
-        return preSum[x2 + 1][y2 + 1] - preSum[x2 + 1][y1] - preSum[x1][y1];
+        return preSum[x2 + 1][y2 + 1] - preSum[x2 + 1][y1] + preSum[x1][y1] - preSum[x1][y2+1];
     }
 
 
