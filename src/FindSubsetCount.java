@@ -15,6 +15,32 @@ import java.util.*;
  You can compare your output with the key in tests/key* files
 */
 public class FindSubsetCount {
+    private static long countValidRectangles(int[] rowSum) {
+        long count = 0;
+        int consecutiveValidRows = 0;
+
+        // Traverse the rowSum array to count the consecutive valid rows
+        for (int i = 0; i < rowSum.length; i++) {
+            if (rowSum[i] == 1) {
+                // Increment the count of consecutive valid rows
+                consecutiveValidRows++;
+            } else {
+                // If we encounter a non-valid row, calculate the rectangles
+                if (consecutiveValidRows > 0) {
+                    // The number of rectangles that can be formed from `consecutiveValidRows` valid rows
+                    count += (long) consecutiveValidRows * (consecutiveValidRows + 1) / 2;
+                    consecutiveValidRows = 0;
+                }
+            }
+        }
+
+        // If the last sequence of valid rows ends at the end of the array, we need to count them as well
+        if (consecutiveValidRows > 0) {
+            count += (long) consecutiveValidRows * (consecutiveValidRows + 1) / 2;
+        }
+
+        return count;
+    }
 
     public static void main(String[] args) throws IOException {
         BufferedReader f = new BufferedReader(new FileReader(args[0]));
@@ -145,7 +171,10 @@ public class FindSubsetCount {
         ///  ex) (i,j) = 0
         ///  3) do rectangle process (determining going left or right)
         ///  rangeQuery to calculate number of points to determine direction
+        long count = 0;
+        /* your code here to calculate the count*/
 
+       // System.out.println(count);
 
         //
         // left = starting column of submatrix
@@ -169,15 +198,12 @@ public class FindSubsetCount {
                     System.out.print("rowSum[" + row + "] = " + rowSum[row] + " ");
                 }
                 System.out.println();
-                // count += countValidRectangles(rowSum);
+                count += countValidRectangles(rowSum);
             }
         }
+        System.out.println("Count: " +  count);
 
 
-        long count = 0;
-        /* your code here to calculate the count*/
-
-        System.out.println(count);
     }
 }
 
@@ -265,6 +291,7 @@ class PrefixSum2D {
             System.out.println();
         }
     }
+
 
 
 }
