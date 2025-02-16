@@ -126,12 +126,13 @@ public class FindSubsetCount {
         int numY = yList.size();
         // initialize 2D  matrix with known dimensions
         int[][] matrix = new int[numX][numY];
-
+        int[] rs = new int[numY];
         //populate Matrix with compressed points:
         for (int[] point : compressedPoints) {
             // retrieve x and y coordinates of each point
             int x = point[0];
             int y = point[1];
+            rs[y] = x;
             // mark each point
             // ex)
             // (0,3)
@@ -152,6 +153,7 @@ public class FindSubsetCount {
         ///  create the PrefixSum2D object
         PrefixSum2D prefixSum = new PrefixSum2D(matrix);
         System.out.println("PrefixSum: " + prefixSum);
+        int solution = search(rs, prefixSum,0);
         //prefixSum.printPreSum();
         // System.out.println("PrefixSum: " + prefixSum);
         /// apply recursive algorithm that calculates the preSum for rectangle
@@ -173,6 +175,7 @@ public class FindSubsetCount {
         ///  rangeQuery to calculate number of points to determine direction
         long count = 0;
         /* your code here to calculate the count*/
+
 
        // System.out.println(count);
 
@@ -203,6 +206,22 @@ public class FindSubsetCount {
         }
         System.out.println("Count: " +  count);
 
+
+    }
+
+    private static int search(int[] rs, PrefixSum2D prefixSum, int column, int x1, int y1, int x2, int y2) {
+        if (column >= rs.length) {
+            return 0;
+        }
+        int count = 0;
+        for (int i = column+1; i < rs.length; i++) {
+            if (expand(x1,y1,x2,y2,i)) {
+                count++;
+
+            }
+
+        }
+        return count;
 
     }
 }
@@ -256,7 +275,7 @@ class PrefixSum2D {
         int d = preSum[x1][y2];
         System.out.println("a = " + a + ", b = " + b + ", c = " + c + ", d = " + d);
         return a - b - c + d;
-
+        */
 
         int a = preSum[x2+1][y2+1];
         System.out.println("a = " + a);
@@ -268,7 +287,8 @@ class PrefixSum2D {
         System.out.println("d = " + d);
         //System.out.println("a = " + a + ", b = " + b + ", c = " + c + ", d = " + d);
         return a - b + c - d;
-        */
+        /*
+
         // Adjust the indices to account for 1-indexed preSum matrix
         int a = preSum[x2 + 1][y2 + 1];   // bottom-right corner
         int b = preSum[x1][y2 + 1];       // top-right corner (row above)
@@ -281,6 +301,8 @@ class PrefixSum2D {
 
         // Calculate the sum for the submatrix by applying the inclusion-exclusion principle
         return sum;
+
+         */
     }
 
     public void printPreSum() {
