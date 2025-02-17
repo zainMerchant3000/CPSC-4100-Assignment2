@@ -126,12 +126,21 @@ public class FindSubsetCount {
         int numY = yList.size();
         // initialize 2D  matrix with known dimensions
         int[][] matrix = new int[numX][numY];
+        // for every column, tells us row of where point is located
+        // numY -> Columns
         int[] rs = new int[numY];
         //populate Matrix with compressed points:
         for (int[] point : compressedPoints) {
             // retrieve x and y coordinates of each point
             int x = point[0];
             int y = point[1];
+            // rs[3] = 0
+            // rs[2] = 2
+            // rs[1] = 1
+            // rs[0] = 3
+            // rs[4] = 4
+            // rs[3,1,2,0,4]
+            // rs = #of columns in the set
             rs[y] = x;
             // mark each point
             // ex)
@@ -148,31 +157,18 @@ public class FindSubsetCount {
             System.out.println();
         }
         System.out.println();
-        //System.out.println(Arrays.toString(matrix[0]));
 
         ///  create the PrefixSum2D object
         PrefixSum2D prefixSum = new PrefixSum2D(matrix);
         System.out.println("PrefixSum: " + prefixSum);
-        int solution = search(rs, prefixSum,0);
+        /// TODO: Create class that stores current dimensions of rectangle?
+
+       // int solution = search(rs, prefixSum,0);
         //prefixSum.printPreSum();
         // System.out.println("PrefixSum: " + prefixSum);
-        /// apply recursive algorithm that calculates the preSum for rectangle
+
         /// sumRegion -> determines #of points within the rectangle
 
-
-        /// TODO: next steps
-        ///  PreSum Matrix
-        ///  can move left and right in our rectangle
-        ///
-        /// possible assumptions:
-        ///  both left and right have L and R amount of points on either side
-        ///  will have
-        ///  process:
-        ///  1) create matrix Matrix that stores all of the points in 2D array
-        ///  2) will need to pick arbitrary 2 points (vertex in entire graph)
-        ///  ex) (i,j) = 0
-        ///  3) do rectangle process (determining going left or right)
-        ///  rangeQuery to calculate number of points to determine direction
         long count = 0;
         /* your code here to calculate the count*/
 
@@ -205,8 +201,6 @@ public class FindSubsetCount {
             }
         }
         System.out.println("Count: " +  count);
-
-
     }
 
     private static int search(int[] rs, PrefixSum2D prefixSum, int column, int x1, int y1, int x2, int y2) {
@@ -214,15 +208,99 @@ public class FindSubsetCount {
             return 0;
         }
         int count = 0;
+        // go through every column
+        // ex)
+        //
+        // Matrix:
+        // 0 0 0 1 0
+        // 0 1 0 0 0
+        // 0 0 1 0 0
+        // 1 0 0 0 0
+        // 0 0 0 0 1
+        //
+        // Matrix:
+        // 0 0 0 1 0
+        // 0 2 0 0 0
+        // 0 0 3 0 0
+        // 4 0 0 0 0
+        // 0 0 0 0 5
+        //
+         // 1 = [0][3] -> preSum[1][4]
+        // 2 =  [1][1] -> preSum[2][2]
+        // 3 =  [2][2] -> preSum[3][3]
+        // 4 =  [3][0] -> preSum[4][1]
+        // 5 =  [4][4] -> preSum[5][5]
+        //
+        // All Possible Subsets:
+        // {1}, {2}, {3}, {4}, {5}, {1,2},{2,3},{3,4},{2,3,4},{
+     // PreSum:
+        //
+         // 0 0 0 1 1
+         // 0 1 1 2 2
+        //  0 1 2 3 3
+        //  1 2 3 4 4
+        //  1 2 3 4 5
+
+        // 0 0 0 x 1
+        // 0 x 1 2 2
+        // 0 1 x 3 3
+        // x 2 3 4 4
+        // 1 2 3 4 x
+
+        // Algorithm:
+        // 1) pick 1 [0][3]
+        //   -> possible options: [2,3,4,5]
+        //      -> pick 2:
+        //            {1,2} -> can do
+        //      -> pick 3:
+        //      -> pick 4:
+        //      -> pick 5:
+
+
+
+
+
+       // go through each 'column'
+        // in this column is 'row' (x and y inverted)
+        // i = 1
+        // (expand(x1,y1,x2,y2,1)
+        //   -> pick
+        // i = 2
         for (int i = column+1; i < rs.length; i++) {
             if (expand(x1,y1,x2,y2,i)) {
                 count++;
-
             }
 
         }
         return count;
 
+    }
+
+    private static boolean expand(int x1, int y1, int x2, int y2, int i) {
+        // method to expand rectangle
+        // 1) Check that new point at column i is within bounds of rectangle
+        /*
+        // Check if the new point at column i is within the bounds of the rectangle
+        if (i < y1 || i > y2) {
+        return false;
+        }
+
+        // Check if the point at column i is present in the matrix
+        // Assuming rs[i] gives the row index of the point in column i
+        int newX = rs[i];
+        if (newX < x1 || newX > x2) {
+        return false;
+        }
+
+        // Update the rectangle's bounds to include the new point
+        x1 = Math.min(x1, newX);
+        x2 = Math.max(x2, newX);
+        y1 = Math.min(y1, i);
+        y2 = Math.max(y2, i);
+
+         */
+
+        return false;
     }
 }
 
