@@ -140,6 +140,11 @@ public class FindSubsetCount {
             // rs[0] = 3
             // rs[4] = 4
             // rs[3,1,2,0,4]
+            // rs[0] = 3
+            // rs[1]
+            // rs[2]
+            // rs[3]
+            // rs[4]
             // rs = #of columns in the set
             rs[y] = x;
             // mark each point
@@ -162,7 +167,11 @@ public class FindSubsetCount {
         PrefixSum2D prefixSum = new PrefixSum2D(matrix);
         System.out.println("PrefixSum: " + prefixSum);
         /// TODO: Create class that stores current dimensions of rectangle?
-
+       // int x1, int y1, int x2, int y2;
+        // Where to start our recursive search?
+        for (int i = 0; i < rs.length; i++) {
+            System.out.println("rs[i]: " + rs[i]);
+        }
        // int solution = search(rs, prefixSum,0);
         //prefixSum.printPreSum();
         // System.out.println("PrefixSum: " + prefixSum);
@@ -204,7 +213,7 @@ public class FindSubsetCount {
     }
 
     private static int search(int[] rs, PrefixSum2D prefixSum, int column, int x1, int y1, int x2, int y2) {
-        if (column >= rs.length) {
+        if (column >= rs.length) { // no more columns to check
             return 0;
         }
         int count = 0;
@@ -257,17 +266,16 @@ public class FindSubsetCount {
         //      -> pick 5:
 
 
-
-
-
        // go through each 'column'
         // in this column is 'row' (x and y inverted)
         // i = 1
         // (expand(x1,y1,x2,y2,1)
         //   -> pick
+        // How to determine two points?
         // i = 2
         for (int i = column+1; i < rs.length; i++) {
             if (expand(x1,y1,x2,y2,i)) {
+                // if rectangle can be 'expanded' (counts as possible subset?)
                 count++;
             }
 
