@@ -166,13 +166,12 @@ public class FindSubsetCount {
         ///  create the PrefixSum2D object
         PrefixSum2D prefixSum = new PrefixSum2D(matrix);
         System.out.println("PrefixSum: " + prefixSum);
-        /// TODO: Create class that stores current dimensions of rectangle?
-       // int x1, int y1, int x2, int y2;
+
         // Where to start our recursive search?
         for (int i = 0; i < rs.length; i++) {
             System.out.println("rs[i]: " + rs[i]);
         }
-       // int solution = search(rs, prefixSum,0);
+        int solution = search(rs, prefixSum, rs[0], 0, rs[0], 0);
         //prefixSum.printPreSum();
         // System.out.println("PrefixSum: " + prefixSum);
 
@@ -212,11 +211,11 @@ public class FindSubsetCount {
         System.out.println("Count: " +  count);
     }
 
-    private static int search(int[] rs, PrefixSum2D prefixSum, int column, int x1, int y1, int x2, int y2) {
-        if (column >= rs.length) { // no more columns to check
+    private static int search(int[] rs, PrefixSum2D prefixSum, int x1, int y1, int x2, int y2) {
+        if (y1 >= rs.length) { // no more columns to check
             return 0;
         }
-        int count = 0;
+        int count = 1;
         // go through every column
         // ex)
         //
@@ -273,18 +272,28 @@ public class FindSubsetCount {
         //   -> pick
         // How to determine two points?
         // i = 2
-        for (int i = column+1; i < rs.length; i++) {
-            if (expand(x1,y1,x2,y2,i)) {
-                // if rectangle can be 'expanded' (counts as possible subset?)
-                count++;
+        for (int i = y2 +1; i < rs.length; i++) {
+            int x3 = x2;
+            int x = x1;
+            if (rs[i] > x2) {
+                x3 = rs[i];
             }
+            if (rs[i] < x) {
+                x = rs[i];
+            }
+            if (prefixSum.sumRegion(x,y1,x3,y2) - prefixSum.sumRegion(x1,y1,x2,i) == 1) {
+                count++;
+                search(rs, prefixSum, x, y1, x3, i);
+            }
+
+
 
         }
         return count;
 
     }
 
-    private static boolean expand(int x1, int y1, int x2, int y2, int i) {
+    private static boolean expand(int x1, int y1, int x2, int y2) {
         // method to expand rectangle
         // 1) Check that new point at column i is within bounds of rectangle
         /*
