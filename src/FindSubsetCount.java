@@ -2,7 +2,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-
+// Zain-Abbas Merchant
+// 2/17/2025
+// CPSC 4100 Assignment 2
 /*
  Test your code with the provided test cases in \tests
  The command should look like:
@@ -15,32 +17,6 @@ import java.util.*;
  You can compare your output with the key in tests/key* files
 */
 public class FindSubsetCount {
-    private static long countValidRectangles(int[] rowSum) {
-        long count = 0;
-        int consecutiveValidRows = 0;
-
-        // Traverse the rowSum array to count the consecutive valid rows
-        for (int i = 0; i < rowSum.length; i++) {
-            if (rowSum[i] == 1) {
-                // Increment the count of consecutive valid rows
-                consecutiveValidRows++;
-            } else {
-                // If we encounter a non-valid row, calculate the rectangles
-                if (consecutiveValidRows > 0) {
-                    // The number of rectangles that can be formed from `consecutiveValidRows` valid rows
-                    count += (long) consecutiveValidRows * (consecutiveValidRows + 1) / 2;
-                    consecutiveValidRows = 0;
-                }
-            }
-        }
-
-        // If the last sequence of valid rows ends at the end of the array, we need to count them as well
-        if (consecutiveValidRows > 0) {
-            count += (long) consecutiveValidRows * (consecutiveValidRows + 1) / 2;
-        }
-
-        return count;
-    }
 
     public static void main(String[] args) throws IOException {
         BufferedReader f = new BufferedReader(new FileReader(args[0]));
@@ -97,9 +73,7 @@ public class FindSubsetCount {
             // populate map with sorted y-points from yList
             yMap.put(y, rank++);
         }
-        //
-        // System.out.println("xMap: " + xMap);
-        // System.out.println("yMap: " + yMap);
+
         List<int[]> compressedPoints = new ArrayList<>();
         for (int[] point : points) {
             // ex) (0,3)
@@ -107,16 +81,8 @@ public class FindSubsetCount {
             // yMap[3] = 3
             // compressedPoints.add(0,3)
             int compressedX = xMap.get(point[0]);
-            //System.out.println("Compressed X: " + compressedX);
             int compressedY = yMap.get(point[1]);
-            // System.out.println("Compressed Y: " + compressedY);
             compressedPoints.add(new int[]{compressedX, compressedY});
-        }
-
-        // Print the contents of compressedPoints
-        // System.out.println("Compressed Points:");
-        for (int[] point : compressedPoints) {
-            // System.out.println(Arrays.toString(point));
         }
 
         ///  create the matrix:
@@ -134,19 +100,9 @@ public class FindSubsetCount {
             // retrieve x and y coordinates of each point
             int x = point[0];
             int y = point[1];
-            // rs[3] = 0
-            // rs[2] = 2
-            // rs[1] = 1
-            // rs[0] = 3
-            // rs[4] = 4
-            // rs[3,1,2,0,4]
-            // rs[0] = 3
-            // rs[1]
-            // rs[2]
-            // rs[3]
-            // rs[4]
+
             // rs = #of columns in the set
-            rs[y] = x;
+            rs[y] = x; // mark row index for each y-coordinate
             // mark each point
             // ex)
             // (0,3)
@@ -155,39 +111,37 @@ public class FindSubsetCount {
             // matrix[0][3] = 1 (each point marked as 1)
             matrix[x][y] = 1;
         }
-        /*
-        System.out.println("Printing Matrix below: ");
-        for (int i = 0; i < numX; i++) {
-            for (int j = 0; j < numY; j++) {
-                System.out.print(matrix[i][j] + " ");
-            }
-            System.out.println();
-        }
-        */
-
+        // populate prefixSum from given matrix
         PrefixSum2D prefixSum = new PrefixSum2D(matrix);
-        /*
-        System.out.println("Printing row location of each point in the given column in the matrix: ");
-        for (int i = 0; i < rs.length; i++) {
-            System.out.println("rs[" + i + "]: " + rs[i]);
-        }
-        */
 
+        // including empty set (+1)
         long solution = 1;
+        // finding valid subsets for each rectangle enclosed by this y-coordinate
         for (int y1 = 0; y1 < rs.length; y1++) {
+            // rs[y1] -> defining leftmost x-coordinate of rectangle (for x1)
+            // y1 -> starting at leftmost top corner
+            // rs[y1]
             solution += search(rs, prefixSum, rs[y1], y1, rs[y1], y1);
         }
         System.out.println("Count: " + solution);
     }
 
     private static long search(int[] rs, PrefixSum2D prefixSum, int x1, int y1, int x2, int y2) {
+        // include empty set
         long count = 1;
+        //
         for (int y3 = y2 + 1; y3 < rs.length; y3++) {
+            // provides smallest x-value between current x1 and new x value from found point rs[y3]
+            // x1 -> current
+            // rs[y3] -> new found
             int x1_ = Math.min(x1, rs[y3]);
+            // provides largest x-value between current x2 and new x value from found point rs[y3]
             int x3 = Math.max(x2, rs[y3]);
             long small = prefixSum.sumRegion(x1, y1, x2, y2);
             long large = prefixSum.sumRegion(x1_, y1, x3, y3);
+            // if larger (expanded rectangle) contains 1 new point considered valid subset
             if (large == small + 1) {
+                // continue searching to find new rectangle
                 count += search(rs, prefixSum, x1_, y1, x3, y3);
             }
         }
@@ -216,16 +170,6 @@ class PrefixSum2D {
 
             }
         }
-        /*
-        System.out.println("Printing preSum matrix below: ");
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                System.out.print(preSum[i][j] + " ");
-            }
-            System.out.println();
-        }
-
-         */
     }
 
     // calculate the sum of elements in the submatrix [x1, y1, x2, y2]
